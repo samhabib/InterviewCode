@@ -17,6 +17,14 @@ A probe is when an agent makes repeated attempts to access or discover a service
 A scan is a when an agent tries to map large parts of the IP address/port space to see if there are any running services
 on those ports. 
 
+The code will take six parameters as inputs using the following options (in parenthesis) : 
+	1.The filename of the pcap file. (-f ) 
+	2.A target IP address. (-t) 
+	3.The width for probes, in seconds, Wp.  (-l) 
+	4.The minimum number of packets in a probe, Np.  (-m) 
+	5.The width for scans, in port ID, Ws. (-n) 
+	6.The minimum number of packets in a scan, Ns. (-p) 
+
 
 Size is O(N) because the largest structure we are making is 6 lists of potentially biggest size N 
 
@@ -169,16 +177,22 @@ Goal: Depending on whether we are given a Probe or a Scan request, we are going 
 	range we will add it to our currScan, if not we will check to see if its count is big enough to be considered a
 	scan. If so we will add it our finalList
 
+	Scenarios to look out for
+	----------------------------
+	1. Entire list fits qualifications
+	2. None of the list fits qualifications
+	3. Given empty list
+	4. Finished list with currStucture unadded to finalList
 	
 	Arguments
-	-----------------------	
+	----------------------------
 	listTotal is the current list we will be cycling though looking for probes or scans	
 
-   Type == 0 is Probe search
-   Type == 1 is Scan search
+   	Type == 0 is Probe search
+   	Type == 1 is Scan search
    
-   Width is the width of time that packets need to be sent in to be considered a part of a probe, and the width of ports
-   that is checked in packets to see if they are a part of scan
+  	Width is the width of time that packets need to be sent in to be considered a part of a probe, and the width of ports
+   	that is checked in packets to see if they are a part of scan
    
 	NumNeeded is the number of packets needed to be in a probe or a scan   
    
@@ -211,7 +225,7 @@ def listCheck(listTotal, Type, Width, NumNeeded):
                 currCount = 1
                 currPort = path[2]
 
-				# Checks whether path's port matches our current probe's port number 
+	    # Checks whether path's port matches our current probe's port number 
             elif (currPort == path[2]):
             	
             	# Check whether these two packets were sent within the required Width time frame, if so add it to our currProbe list
@@ -251,7 +265,7 @@ def listCheck(listTotal, Type, Width, NumNeeded):
                 currProbe.insert(0, path)
                 currCount = 1
 
-				# Since our probe is not big enough to be added, we reset currProbe and currCount and add
+	    # Since our probe is not big enough to be added, we reset currProbe and currCount and add
             # the current path to a new probe
             else:
                 prev = path
@@ -273,19 +287,19 @@ def listCheck(listTotal, Type, Width, NumNeeded):
 
         for path in listTotal:
 
-				# Checks to see if our currCount is zero to see if we need to start keeping track of this current packet
+		# Checks to see if our currCount is zero to see if we need to start keeping track of this current packet
             if (currCount == 0):
                 prev = path
                 currScan.insert(currCount, path)
                 currCount = 1
 
-				# Checks to see if the current iterations port and the previous iterations port are within range to be considered in a scan
+		# Checks to see if the current iterations port and the previous iterations port are within range to be considered in a scan
             elif ((path[2] - prev[2]) <= Width):
                 currScan.insert(currCount, path)
                 currCount = currCount + 1
                 prev = path
 
-				# Checks to see if the currScan's count is big enough to be considered a scan, if so it adds it to the finalList
+		# Checks to see if the currScan's count is big enough to be considered a scan, if so it adds it to the finalList
             elif (currCount >= NumNeeded):
                 prev = path
                 finalList.append(currScan)
@@ -294,7 +308,7 @@ def listCheck(listTotal, Type, Width, NumNeeded):
                 currScan.insert(0, path)
                 currCount = 1
 
-				# Since it failed it resets the currScan
+		# Since it failed it resets the currScan
             else:
                 prev = path
                 currScan = []
