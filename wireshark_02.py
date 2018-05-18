@@ -28,7 +28,7 @@ The code will take six parameters as inputs using the following options (in pare
 
 Size is O(N) because the largest structure we are making is 6 lists of potentially biggest size N 
 
-Runtime is O(NlogN) because we perform a sort on our 2 of our lists
+Runtime is O(NlogN) because we perform a sort on our 2 of our lists. Need to edit the way I insert the data into the lists
 '''
 def main():
     # parse all the arguments to the client
